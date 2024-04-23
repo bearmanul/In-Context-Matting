@@ -59,7 +59,7 @@ when provided with a reference input, it becomes an automatic matting system tar
 
 #### 3.2 总体结构
 
-==（这里最好要看一看论文中的结构图，会更清楚）==
+==**（这里最好要看一看论文中的结构图，会更清楚）**==
 
 IconMatting is comprised of three components: a feature extractor, an in-context similarity module, and a matting head.
 
@@ -95,7 +95,7 @@ IconMatting uses the capabilities of Stable Diffusion and both reference and tar
 
 According to our observations, both the reference-target similarity and  target-target similarity matter for locating the potential target  foreground. These correspond to the proposed intersimilarity and  intra-similarity sub-modules.
 
-参考-目标相似度和目标-目标相似度对潜在目标前景的定位都很重要。这些对应于所提出的==Inter==相似性和==Intra==相似性子模块。
+参考-目标相似度和目标-目标相似度对潜在目标前景的定位都很重要。这些对应于所提出的==**Inter**==相似性和==**Intra**==相似性子模块。
 
 ##### Observation
 
