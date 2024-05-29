@@ -56,7 +56,6 @@ def gaussgradient(im, sigma):
     return gx, gy
 ```
 
-
 高斯核的一维形式可以表示为：
 
 $$

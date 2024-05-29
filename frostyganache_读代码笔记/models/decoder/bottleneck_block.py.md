@@ -1,6 +1,9 @@
+# bottleneck
+[yolo组件之Bottleneck层总结_yolo的bottleneck-CSDN博客](https://blog.csdn.net/yueguang8/article/details/136463262)
 
-[bottleneck介绍](https://zhuanlan.zhihu.com/p/349717627)
+>**降低计算复杂度**：通过使用 1x1 卷积层降低输入的通道数，减少了后续 3x3 卷积层的计算量。这对于深层网络的训练和推理过程都具有重要意义。
 
+# 代码注释
 ```python
 import torch
 from torch import nn

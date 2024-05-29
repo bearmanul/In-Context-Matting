@@ -1,11 +1,10 @@
-# 对应论文3.4. In-Context Similarity中的Inter-Similarity
 
 # 注意力机制
 对我来说很难理解，看了好几篇文章：
 1. 感性认识：人类视觉的选择性注意力机制。翻译时，注意力分配模型分配给不同英文单词的注意力大小不同。[注意力机制（Attention mechanism）基本原理详解及应用 - Jerry_Jin - 博客园 (cnblogs.com)](https://www.cnblogs.com/jins-note/p/13056604.html)
 2. 认识Query, Key, Value（q, k, v）：[Attention：注意力机制 - killens - 博客园 (cnblogs.com)](https://www.cnblogs.com/killens/p/16303795.html)
 3. 公式和代码实现：[人工智能 - Vision Transformers的注意力层概念解释和代码实现 - deephub - SegmentFault 思否](https://segmentfault.com/a/1190000044678798)
-
+4. self attention和cross attention :[Self -Attention、Multi-Head Attention、Cross-Attention_cross attention-CSDN博客](https://blog.csdn.net/philosophyatmath/article/details/128013258)
 # permute
 [PyTorch 两大转置函数 transpose() 和 permute(), 以及RuntimeError: invalid argument 2: view size is not compati_transpose permute-CSDN博客](https://blog.csdn.net/xinjieyuan/article/details/105232802)
 

@@ -122,6 +122,45 @@
   2. 通过每个融合块前向传播特征。
   3. 返回最终融合的特征。
 
+
+# TrainingFreeAttention和TrainingCrossAttention两个类的区别
+
+`TrainingCrossAttention` 比起 `TrainingFreeAttention`，好像只是多了一个 `OneWayAttentionBlock` ，`OneWayAttentionBlock` 中使用了：
+1. **LayerNorm**：标准化层，用于在注意力和 MLP 块之前对输入进行归一化。
+2. **MLPBlock**：多层感知机块，用于对注意力输出进行进一步处理
+3. `attention.py` 中定义的 `Attention` 类，
+
+其他代码貌似基本一致。
+
+### `Attention` 类的作用
+
+`Attention` 类实现了一个多头注意力机制，其中包括查询（query）、键（key）和值（value）的线性投影，以及投影后的分头（head）和合并头的操作。其主要步骤包括：
+
+1. **线性投影**：对输入的查询、键和值分别进行线性投影，将它们映射到内部维度。
+2. **分头**：将投影后的张量分为多个头，以进行并行计算。
+3. **注意力计算**：计算查询和键的点积，应用缩放和softmax，得到注意力权重。
+4. **加权求和**：使用注意力权重对值进行加权求和。
+5. **合并头**：将多个头的输出重新组合到一起。
+6. **输出投影**：将合并后的结果通过线性层输出。
+
+### `TrainingCrossAttention` 和 `TrainingFreeAttention` 的具体区别
+
+1. **结构复杂性**：
+    
+    - `TrainingFreeAttention` 没有使用多头注意力机制，只是简单地计算了注意力权重并进行加权求和。
+    - `TrainingCrossAttention` 通过 `OneWayAttentionBlock` 使用了 `Attention` 类，增加了多头注意力机制，使得模型在处理复杂特征关系时更加高效。
+2. **注意力机制**：
+    
+    - `TrainingFreeAttention` 中的注意力机制比较简单，没有分头（head）操作，也没有专门的线性投影层。
+    - `TrainingCrossAttention` 中的 `OneWayAttentionBlock` 使用了 `Attention` 类，这包括了多头注意力机制、线性投影、分头、合并头等操作，使得注意力计算更为精细和准确。
+3. **计算细节**：
+    
+    - 在 `TrainingFreeAttention` 中，注意力计算是通过内积和softmax完成的，没有进一步的标准化和非线性变换。
+    - 在 `TrainingCrossAttention` 中，注意力计算不仅包含内积和softmax，还包括标准化（LayerNorm）和多层感知机（MLP），这使得特征提取和融合更加丰富。
+4. **使用的模块**：
+    
+    - `TrainingFreeAttention` 直接使用了 `compute_attention` 函数来计算注意力权重。
+    - `TrainingCrossAttention` 通过 `OneWayAttentionBlock` 引入了更多的层（LayerNorm、MLP），并使用了 `Attention` 类来增强注意力机制的表达能力。
 # 腐蚀、膨胀
 [计算机视觉（一）——形态学操作：腐蚀、膨胀、开闭运算、形态学梯度、顶帽与黑帽_形态学 腐蚀和膨胀-CSDN博客](https://blog.csdn.net/qq_41433002/article/details/115266567)
 
@@ -792,6 +831,45 @@ class TrainingFreeAttentionBlocks(nn.Module):
         output['mask'] = attn_output
 
         return output
+
+```
+
+## trimap, feature, mask 
+### trimap
+
+- **解释**: `trimap` 是一种三分类图像，用于表示前景、背景和不确定区域。通常用于图像抠图任务中，指导模型处理这些区域。
+- **外观**: 对于一张需要扣图的图片，`trimap` 可能会如下所示：
+    - 前景区域（如人物）被标记为白色（值为1）。
+    - 背景区域（如墙壁或地板）被标记为黑色（值为0）。
+    - 不确定区域（如边缘或过渡区域）被标记为灰色（值介于0和1之间）。
+
+示例:
+
+`前景（人物）: 白色 背景（墙壁、地板）: 黑色 不确定区域（边缘、过渡区域）: 灰色`
+
+### feature
+
+- **解释**: `feature` 是一个特征图，表示图像的不同特征，例如纹理、颜色等。经过注意力机制处理后，融合了源图像和参考图像的特征。
+- **外观**: `feature` 通常是一个多通道的特征图，每个通道表示图像的不同方面。可能看起来像模糊的原始图像，但包含了更多的细节和特征信息。
+
+示例:
+
+`多通道特征图: 包含各种图像特征（纹理、边缘、颜色等），但肉眼无法直接辨识`
+
+### mask
+
+- **解释**: `mask` 是一个注意力掩码，表示了注意力机制的输出，通常用来指示哪些区域应该受到更多关注。
+- **外观**: `mask` 可能是一个灰度图，值的范围在0到1之间，表示不同区域的注意力权重。
+
+
+`高注意力区域: 较亮（接近白色） 低注意力区域: 较暗（接近黑色）`
+
+### 具体代码示例中的图像：
+
+假设有一张原始图像，我们希望通过 `SemiTrainingAttentionBlocks` 类进行处理，输出 `trimap`、`feature` 和 `mask`。
+
+```python
+
 
     def training_free_self_attention(self, x, self_attn_maps):
         '''
