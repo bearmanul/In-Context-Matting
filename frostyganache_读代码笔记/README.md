@@ -9,11 +9,11 @@
 
 ## 3.4. In-Context Similarity
 
-![[Pasted image 20240529200913.png|400]]
+![[inter.png|400]]
 
-![[Pasted image 20240529200937.png|400]]
+![[intra.png|400]]
 
-![[Pasted image 20240529200651.png]]
+![[inter-and-intra.png]]
 >图是附录中的
 
 ### 参考资料 
@@ -37,7 +37,7 @@
         attn = torch.softmax(attn, dim=-1)  # 应用softmax得到注意力权重
 ```
 大概对应以下公式
-![[Pasted image 20240529204139.png|200]]
+![[attention.png|200]]
 #### inter-similarity
  [in_context_correspondence.py](./models/decoder/in_context_correspondence.py.md) 中的 `TrainingCrossAttention` 和 `TrainingFreeAttention` 的代码大致相同，不同的是前者多了一个 `OneWayAttentionBlock`. 不太清楚free的含义，是否就是少了 `OneWayAttentionBlock` 的意思。
 
