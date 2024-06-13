@@ -1,5 +1,5 @@
 # SAD, MSE, Grad, Conn
-[SAD, MSE, Grad, Conn](./SAD,MSE,Grad,Conn.md)
+[SAD, MSE, Grad, Conn](SAD,%20MSE,%20Grad,%20Conn.md)
 # 代码注释
 ```python
 import scipy.ndimage  # 导入SciPy库中的图像处理模块

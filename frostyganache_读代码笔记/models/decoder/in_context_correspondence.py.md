@@ -864,9 +864,8 @@ class TrainingFreeAttentionBlocks(nn.Module):
 
 `高注意力区域: 较亮（接近白色） 低注意力区域: 较暗（接近黑色）`
 
-### 具体代码示例中的图像：
 
-假设有一张原始图像，我们希望通过 `SemiTrainingAttentionBlocks` 类进行处理，输出 `trimap`、`feature` 和 `mask`。
+
 
 ```python
 

@@ -9,11 +9,11 @@
 
 ## 3.4. In-Context Similarity
 
-![inter-similarity](./image/inter.png)
+![inter-similarity](In-Context-Matting/frostyganache_读代码笔记/image/inter.png)
 
-![intra-similarity](./image/intra.png)
+![intra-similarity](In-Context-Matting/frostyganache_读代码笔记/image/intra.png)
 
-![inter-intra-similarity](./image/inter-and-intra.png)
+![inter-intra-similarity](In-Context-Matting/frostyganache_读代码笔记/image/inter-and-intra.png)
 >图是附录中的
 
 ### 参考资料 
@@ -24,10 +24,10 @@
 4. self attention和cross attention : [Self -Attention、Multi-Head Attention、Cross-Attention_cross attention-CSDN博客](https://blog.csdn.net/philosophyatmath/article/details/128013258)
 
 ### 对应代码
-这段话对应的代码，我是在 [attention.py](./models/decoder/attention.py.md) 和 [in_context_correspondence.py](./models/decoder/in_context_correspondence.py.md)  里找到的。
+这段话对应的代码，我是在 [attention.py](In-Context-Matting/frostyganache_读代码笔记/models/decoder/attention.py.md) 和 [in_context_correspondence.py](In-Context-Matting/frostyganache_读代码笔记/models/decoder/in_context_correspondence.py.md)  里找到的。
 
 #### attention. py
-定义了Attention类，被 [in_context_correspondence.py](./models/decoder/in_context_correspondence.py.md) 中的 `OneWayAttentionBlock` 调用，`OneWayAttentionBlock` 又被 `TrainingCrossAttention` 调用了。
+定义了Attention类，被 [in_context_correspondence.py](In-Context-Matting/frostyganache_读代码笔记/models/decoder/in_context_correspondence.py.md) 中的 `OneWayAttentionBlock` 调用，`OneWayAttentionBlock` 又被 `TrainingCrossAttention` 调用了。
 
 ```python
         # 注意力计算
@@ -37,9 +37,9 @@
         attn = torch.softmax(attn, dim=-1)  # 应用softmax得到注意力权重
 ```
 大概对应以下公式
-![attention](./image/attention.png)
+![attention](In-Context-Matting/frostyganache_读代码笔记/image/attention.png)
 #### inter-similarity
- [in_context_correspondence.py](./models/decoder/in_context_correspondence.py.md) 中的 `TrainingCrossAttention` 和 `TrainingFreeAttention` 的代码大致相同，不同的是前者多了一个 `OneWayAttentionBlock`. 不太清楚free的含义，是否就是少了 `OneWayAttentionBlock` 的意思。
+ [in_context_correspondence.py](In-Context-Matting/frostyganache_读代码笔记/models/decoder/in_context_correspondence.py.md) 中的 `TrainingCrossAttention` 和 `TrainingFreeAttention` 的代码大致相同，不同的是前者多了一个 `OneWayAttentionBlock`. 不太清楚free的含义，是否就是少了 `OneWayAttentionBlock` 的意思。
 
 这两个类基本一致，大概都是实现对"inter-similarity"的计算（`TrainingFreeAttention` 是否也是呢，不太确定）。都有这行：
 ```python
@@ -48,7 +48,7 @@
 这行 [einsum](https://zhuanlan.zhihu.com/p/650247173) 的作用其实就是普通的矩阵乘法。对应了Figure 7中inter-similarity里的dot-product.
 
 #### intra-similarity
- [in_context_correspondence.py](./models/decoder/in_context_correspondence.py.md) 定义的 `SemiTrainingAttentionBlocks` 中的 `training_free_self_attention` 应该就是实现"self-attention". Figure 7中intra-similarity里的"element-wise multiplication"逐元素乘法（相同位置的元素相乘， $a_{ij}*b_{ij}$ ）, 体现为：
+ [in_context_correspondence.py](In-Context-Matting/frostyganache_读代码笔记/models/decoder/in_context_correspondence.py.md) 定义的 `SemiTrainingAttentionBlocks` 中的 `training_free_self_attention` 应该就是实现"self-attention". Figure 7中intra-similarity里的"element-wise multiplication"逐元素乘法（相同位置的元素相乘， $a_{ij}*b_{ij}$ ）, 体现为：
 
 ```python
 # propagate , element wise multiplication x_ and self_attn_maps
@@ -58,7 +58,7 @@ x_ = x_ * self_attn_map_
 ## 3.5. Matting Head
 >The success of ViTMatte [42] implies that the information of original image is important during decoding. Following this practice, in our matting head, the original image is con catenated and decoded with outputs from previous modules. **The guidance map from the in-context similarity module and the intra-features from the backbone** are merged and refined using a **convolutional feature fusion block**, including a series of **convolution, normalization, and activation layers**. The output multi-scale in-context features are progressively merged using a series of **fusion layers which comprise up sampling, concatenation, convolution, normalization, and activation layers**. Then, following ViTMatte [42], details from the original image are extracted and combined with the merged feature in a detail decoder, enhancing the details of alpha matte. This matting head effectively melds contextual information with original image details, yielding the generation of a highly precise and refined alpha matte.
 
-### 在 [in_context_correspondence.py](./models/decoder/in_context_correspondence.py.md) 中
+### 在 [in_context_correspondence.py](In-Context-Matting/frostyganache_读代码笔记/models/decoder/in_context_correspondence.py.md) 中
 #### SemiTrainingAttentionBlocks类
 
 
@@ -96,9 +96,9 @@ attn_output = self.attn_module(
         attn_ft_matting = self.fusion(attn_ft_matting)
 ```
 
-FusionBlock在 [detail_capture.py](./models/decoder/detail_capture.py.md) 中定义
+FusionBlock在 [detail_capture.py](In-Context-Matting/frostyganache_读代码笔记/models/decoder/detail_capture.py.md) 中定义
 
-### 在 [detail_capture.py](./models/decoder/detail_capture.py.md) 中
+### 在 [detail_capture.py](In-Context-Matting/frostyganache_读代码笔记/models/decoder/detail_capture.py.md) 中
 >...merged and refined using a **convolutional feature fusion block**, including a series of **convolution, normalization, and activation layers**. 
 
 ```python
@@ -154,7 +154,7 @@ model:
 ## 4.2中的Evaluation.
 >We employ the four widely used matting metrics: SAD, MSE, Grad and Conn [27]. Lower values imply higher-quality mattes. In particular, MSE is scaled by a factor of 1 × 10−3.
 
-在 [criterion/matting_criterion.py](./criterion/matting_criterion.py.md) 
+在 [criterion/matting_criterion.py](In-Context-Matting/frostyganache_读代码笔记/criterion/matting_criterion.py.md) 
 
 [SAD, MSE, Grad, Conn](./SAD,MSE,Grad,Conn.md)
 
