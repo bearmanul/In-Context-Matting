@@ -86,3 +86,5 @@ trimap = trimap.cpu().numpy()
 新找的图片没有trimap，验证时没有trimap会报错。翻了一下已有的代码，调用了 `Genmask` 生成trimap，结果灰色区域太多了。用生成的trimap在新找的几张图片上验证试了试：
 ![result2](./frostyganache_读代码笔记/image/result2.png)
 没有搞懂trimap在验证过程中的作用，但还是等生成trimap好一些再评估新图片。
+以现有的alpha matte和trimap，验证时生成的alpha matte：
+![alpha matte](./frostyganache_读代码笔记/image/1718272848494.png)
