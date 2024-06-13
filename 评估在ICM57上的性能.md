@@ -76,6 +76,7 @@ trimap = trimap.cpu().numpy()
 | MSE    | SAD   | GRAD  | CONN |
 | ------ | ----- | ----- | ---- |
 | 0.0082 | 10.64 | 11.95 | 6.40 |
+
 ![result1](./frostyganache_读代码笔记/image/result1.png)
 
 最终评估的结果和论文里只有MSE是接近的，虽然也有模型改变了的的可能，但让我怀疑是不是哪没做对。
